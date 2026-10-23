@@ -11,7 +11,6 @@ import {
   Heart,
   LoaderCircle,
   MapPin,
-  Sparkles,
   Users,
   X,
 } from "lucide-react";
@@ -219,7 +218,7 @@ export default function Home() {
           <div className="opening-orbit orbit-two" />
           <div className="envelope-wrap">
             <div className="tiny-stars" aria-hidden="true">✦ · ✧ · ✦</div>
-            <div className="envelope" aria-hidden="true">
+            <div className="envelope">
               <div className="envelope-back" />
               <div className="letter-preview">
                 <Baby size={24} />
@@ -227,11 +226,15 @@ export default function Home() {
                 <span>нэг нас</span>
               </div>
               <div className="envelope-front" />
-              <div className="wax-seal"><span>1</span></div>
+              <button
+                type="button"
+                className="wax-seal"
+                onClick={() => setOpened(true)}
+                aria-label="Урилгаа нээж цааш шилжих"
+              >
+                <span>1</span>
+              </button>
             </div>
-            <button className="open-button" onClick={() => setOpened(true)}>
-              Урилгаа нээх <Sparkles size={17} />
-            </button>
             <p className="opening-date">2026 · 11 · 06</p>
           </div>
         </section>
