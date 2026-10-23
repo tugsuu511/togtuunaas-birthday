@@ -41,6 +41,7 @@ button { cursor: pointer; }
   background: var(--navy); transition: opacity .65s ease, visibility .65s ease; overflow: hidden;
 }
 .invitation-open .opening-screen { opacity: 0; visibility: hidden; }
+.invitation-opening .opening-screen { pointer-events: none; animation: openingScreenLift 1.4s cubic-bezier(.72,0,.18,1) forwards; }
 .opening-orbit { position: absolute; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; }
 .orbit-one { width: 500px; height: 500px; left: -280px; top: -180px; }
 .orbit-two { width: 420px; height: 420px; right: -250px; bottom: -120px; }
@@ -48,8 +49,12 @@ button { cursor: pointer; }
 .tiny-stars { color: var(--gold); letter-spacing: .65rem; font-size: 18px; margin-bottom: 16px; animation: shimmer 2.4s ease-in-out infinite; }
 .opening-screen .eyebrow { color: #fff; }
 .eyebrow { margin: 0; font-size: 11px; letter-spacing: .21em; font-weight: 800; color: var(--sage-deep); }
-.envelope { position: relative; width: min(78vw, 330px); height: 215px; margin: 44px auto 34px; filter: drop-shadow(0 24px 24px rgba(61,73,64,.15)); }
+.envelope { position: relative; width: min(78vw, 330px); height: 215px; margin: 44px auto 34px; filter: drop-shadow(0 24px 24px rgba(61,73,64,.15)); perspective: 900px; }
 .envelope-back { position: absolute; inset: 0; background: #b8d7eb; border-radius: 8px; }
+.envelope-flap {
+  position: absolute; inset: 0 0 auto; height: 58%; z-index: 3; border-radius: 8px 8px 0 0;
+  background: #8fc1e1; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; backface-visibility: hidden;
+}
 .letter-preview {
   position: absolute; width: 84%; height: 185px; left: 8%; top: -35px; z-index: 1; border-radius: 5px;
   background: var(--paper); border: 1px solid #d6e8f4; color: var(--sage-deep); display: flex; flex-direction: column;
@@ -71,6 +76,9 @@ button { cursor: pointer; }
 .wax-seal:hover { filter: brightness(1.13); }
 .wax-seal:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
 .wax-seal:active { animation: none; transform: translate(-50%,-46%) scale(.94); }
+.invitation-opening .envelope-flap { animation: flapOpen .48s cubic-bezier(.55,.05,.3,1) forwards; }
+.invitation-opening .letter-preview { animation: letterFly 1.05s .2s cubic-bezier(.2,.78,.24,1) forwards; }
+.invitation-opening .wax-seal { animation: sealRelease .3s ease forwards; }
 .open-button, .submit-button {
   border: 0; border-radius: 999px; background: linear-gradient(135deg, #2c8ff1, #6233ca); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   min-height: 52px; padding: 0 28px; font-weight: 800; letter-spacing: .02em; box-shadow: 0 11px 24px rgba(65,92,75,.22); transition: transform .2s ease, background .2s ease;
@@ -81,6 +89,7 @@ button { cursor: pointer; }
 
 .invitation-content { opacity: 0; transform: scale(.985); transition: opacity .65s .22s ease, transform .8s .12s ease; }
 .invitation-open .invitation-content { opacity: 1; transform: none; }
+.invitation-opening .invitation-content { animation: nextPageRise 1.4s cubic-bezier(.72,0,.18,1) forwards; }
 .topbar {
   position: absolute; z-index: 10; top: 0; left: 0; right: 0; max-width: 1180px; margin: auto; height: 76px;
   display: flex; align-items: center; justify-content: space-between; padding: 0 22px;
@@ -323,4 +332,25 @@ footer small { color: rgba(255,255,255,.68); font: 13px Georgia, serif; }
   0%, 100% { transform: translate(-50%,-50%); }
   42% { transform: translate(-50%,-72%) scale(1.04); }
   58% { transform: translate(-50%,-72%) scale(1.04); }
+}
+@keyframes flapOpen {
+  0%, 18% { transform: rotateX(0); }
+  100% { transform: rotateX(-180deg); }
+}
+@keyframes sealRelease {
+  to { opacity: 0; transform: translate(-50%,-88%) scale(.68); }
+}
+@keyframes letterFly {
+  0%, 10% { transform: translateY(0); }
+  65% { transform: translateY(-118px) rotate(-1.5deg) scale(1.03); }
+  100% { transform: translateY(-175px) rotate(1deg) scale(1.06); opacity: .92; }
+}
+@keyframes openingScreenLift {
+  0%, 58% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+@keyframes nextPageRise {
+  0%, 52% { opacity: 0; transform: translateY(28svh) scale(.985); }
+  66% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }

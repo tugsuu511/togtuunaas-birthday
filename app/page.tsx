@@ -117,6 +117,7 @@ function PartyConfetti({ compact = false }: { compact?: boolean }) {
 
 export default function Home() {
   const [opened, setOpened] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
   const [attendance, setAttendance] = useState<Attendance>("yes");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -147,6 +148,12 @@ export default function Home() {
     const timer = window.setTimeout(() => setToast(null), 3200);
     return () => window.clearTimeout(timer);
   }, [toast]);
+
+  function openInvitation() {
+    if (isOpening) return;
+    setIsOpening(true);
+    window.setTimeout(() => setOpened(true), 1400);
+  }
 
   async function uploadPhoto(file: File) {
     if (!file.type.startsWith("image/")) {
@@ -209,7 +216,7 @@ export default function Home() {
   }
 
   return (
-    <main className={opened ? "site invitation-open" : "site"}>
+    <main className={opened ? "site invitation-open" : isOpening ? "site invitation-opening" : "site"}>
       <div className="paper-noise" aria-hidden="true" />
 
       {!opened && (
@@ -220,6 +227,7 @@ export default function Home() {
             <div className="tiny-stars" aria-hidden="true">✦ · ✧ · ✦</div>
             <div className="envelope">
               <div className="envelope-back" />
+              <div className="envelope-flap" aria-hidden="true" />
               <div className="letter-preview">
                 <Baby size={24} />
                 <strong>Тогтуун</strong>
@@ -229,7 +237,8 @@ export default function Home() {
               <button
                 type="button"
                 className="wax-seal"
-                onClick={() => setOpened(true)}
+                onClick={openInvitation}
+                disabled={isOpening}
                 aria-label="Урилгаа нээж цааш шилжих"
               >
                 <span>1</span>
