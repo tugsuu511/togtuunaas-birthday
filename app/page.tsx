@@ -205,6 +205,7 @@ export default function Home() {
 
       {!opened && (
         <section className="opening-screen" aria-label="Урилгаа нээх">
+          <PartyConfetti />
           <div className="opening-orbit orbit-one" />
           <div className="opening-orbit orbit-two" />
           <div className="envelope-wrap">

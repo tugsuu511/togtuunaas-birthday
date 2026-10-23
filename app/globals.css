@@ -45,7 +45,13 @@ button { cursor: pointer; }
 .opening-orbit { position: absolute; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; }
 .orbit-one { width: 500px; height: 500px; left: -280px; top: -180px; }
 .orbit-two { width: 420px; height: 420px; right: -250px; bottom: -120px; }
-.envelope-wrap { width: min(88vw, 420px); text-align: center; position: relative; }
+.envelope-wrap { width: min(88vw, 420px); text-align: center; position: relative; z-index: 2; }
+.opening-screen .party-confetti { opacity: .88; }
+.opening-screen .party-illustration.gift { top: -16px; left: 62%; }
+.opening-screen .party-illustration.horn { top: 11%; left: -18px; }
+.opening-screen .party-illustration.cupcake { top: auto; right: 1%; bottom: 7%; }
+.opening-screen .party-illustration.flower { top: 19%; left: 8%; }
+.opening-screen .party-illustration.streamer { right: 18%; bottom: -14px; width: 88px; }
 .tiny-stars { color: var(--gold); letter-spacing: .65rem; font-size: 18px; margin-bottom: 16px; animation: shimmer 2.4s ease-in-out infinite; }
 .opening-screen .eyebrow { color: #fff; }
 .eyebrow { margin: 0; font-size: 11px; letter-spacing: .21em; font-weight: 800; color: var(--sage-deep); }
