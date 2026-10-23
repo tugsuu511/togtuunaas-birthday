@@ -186,8 +186,12 @@ button { cursor: pointer; }
 
 .details-section {
   padding: 110px 20px 92px; background-color: #fff; text-align: center; position: relative; overflow: hidden;
+}
+.details-section::before {
+  content: ""; position: absolute; z-index: 1; left: -90px; right: -90px; top: 135px; height: 560px; pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg width='760' height='520' viewBox='0 0 760 520' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M-80 205C135-40 260 415 520 150S840 60 880 145' stroke='%23959bff' stroke-width='32'/%3E%3Cpath d='M-80 250C150 20 285 455 545 195S850 110 895 190' stroke='%23f782c4' stroke-width='28'/%3E%3Cpath d='M-80 294C160 70 310 490 570 238S860 155 910 234' stroke='%23ffe06c' stroke-width='28'/%3E%3Cpath d='M-80 338C175 115 340 520 600 280S875 200 925 278' stroke='%23ffab82' stroke-width='27'/%3E%3Cpath d='M-80 380C190 155 370 550 630 320S890 245 940 320' stroke='%2387e2cf' stroke-width='26'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: 50% -80px; background-size: 760px 520px;
+  background-repeat: no-repeat; background-position: 50% 0; background-size: 820px 560px; opacity: .82;
+  animation: calendarWaveFlow 7s ease-in-out infinite;
 }
 .section-kicker { font-size: 10px; letter-spacing: .28em; color: var(--sage); font-weight: 900; margin-bottom: 18px; }
 .details-section h2, .memory-copy h2 { font-size: clamp(37px, 9vw, 64px); line-height: 1.05; letter-spacing: -.04em; margin: 0; }
@@ -360,4 +364,8 @@ footer small { color: rgba(255,255,255,.68); font: 13px Georgia, serif; }
 @keyframes goldGlow {
   0%, 100% { filter: drop-shadow(0 0 8px rgba(255,201,94,.48)); }
   50% { filter: drop-shadow(0 0 18px rgba(255,220,128,.9)); }
+}
+@keyframes calendarWaveFlow {
+  0%, 100% { transform: translate3d(-18px, 0, 0) rotate(-.5deg); }
+  50% { transform: translate3d(18px, 12px, 0) rotate(.5deg); }
 }
