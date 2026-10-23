@@ -158,6 +158,8 @@ button { cursor: pointer; }
 .invitation-open .reveal { animation: revealUp .7s ease forwards; }
 .invitation-open .reveal-1 { animation-delay: .42s; }
 .invitation-open .reveal-2 { animation-delay: .62s; }
+.scroll-reveal { opacity: 0; transform: translateY(38px) scale(.985); transition: opacity .75s ease, transform .85s cubic-bezier(.2,.72,.24,1); }
+.scroll-reveal.is-visible { opacity: 1; transform: translateY(0) scale(1); }
 
 .party-confetti {
   position: absolute;

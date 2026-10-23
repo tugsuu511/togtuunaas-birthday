@@ -149,6 +149,29 @@ export default function Home() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
+  useEffect(() => {
+    if (!opened) return;
+    const items = Array.from(document.querySelectorAll<HTMLElement>("[data-scroll-reveal]"));
+    if (!("IntersectionObserver" in window)) {
+      items.forEach((item) => item.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.14, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [opened, submitted]);
+
   function openInvitation() {
     if (isOpening) return;
     setIsOpening(true);
@@ -287,10 +310,10 @@ export default function Home() {
 
         <section className="details-section" id="details">
           <PartyConfetti compact />
-          <div className="ornament-divider"><span>◆</span></div>
-          <h2>Тогтууны анхны<br /><em>төрсөн өдөр</em></h2>
+          <div className="ornament-divider scroll-reveal" data-scroll-reveal><span>◆</span></div>
+          <h2 className="scroll-reveal" data-scroll-reveal>Тогтууны анхны<br /><em>төрсөн өдөр</em></h2>
 
-          <div className="calendar-card" aria-label="2026 оны 11 дүгээр сарын календарь">
+          <div className="calendar-card scroll-reveal" data-scroll-reveal aria-label="2026 оны 11 дүгээр сарын календарь">
             <div className="calendar-top"><span>11 САР</span><strong>2026</strong></div>
             <div className="calendar-weekdays">
               {['Ня', 'Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя'].map((day) => <span key={day}>{day}</span>)}
@@ -303,7 +326,7 @@ export default function Home() {
             <div className="calendar-caption"><CalendarDays size={18} /> Баасан гараг · 16:30 цаг</div>
           </div>
 
-          <div className="countdown-wrap">
+          <div className="countdown-wrap scroll-reveal" data-scroll-reveal>
             <p>БОЛОХ ХҮРТЭЛ</p>
             <div className="countdown-grid" aria-label="Төрсөн өдөр хүртэлх хугацаа">
               <div><strong>{countdown.days}</strong><span>ӨДӨР</span></div>
@@ -313,7 +336,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="location-card">
+          <div className="location-card scroll-reveal" data-scroll-reveal>
             <span className="info-icon"><MapPin size={22} /></span>
             <p>ХААНА</p>
             <h3>Koko Kids House</h3>
@@ -322,27 +345,27 @@ export default function Home() {
               <MapPin size={17} /> Зам заалгах
             </a>
           </div>
-          <div className="ornament-divider bottom"><span>◆</span></div>
+          <div className="ornament-divider bottom scroll-reveal" data-scroll-reveal><span>◆</span></div>
         </section>
 
         <section className="memory-section">
           <PartyConfetti compact />
-          <div className="memory-copy">
+          <div className="memory-copy scroll-reveal" data-scroll-reveal>
             <h2>Инээд, хайр,<br /><em>бяцхан гайхамшиг</em></h2>
             <p>Тогтууны анхны төрсөн өдрийн дурсамжид таны инээмсэглэл хамгийн нандин бэлэг байх болно.</p>
           </div>
-          <div className="doodle-line" aria-hidden="true" />
+          <div className="doodle-line scroll-reveal" data-scroll-reveal aria-hidden="true" />
         </section>
 
         <section className="rsvp-section" id="rsvp">
           <PartyConfetti compact />
-          <div className="rsvp-heading">
+          <div className="rsvp-heading scroll-reveal" data-scroll-reveal>
             <h2>{submitted ? "Хариу ирлээ!" : "Ирэх эсэхээ доорх хэсгээр мэдэгдээрэй."}</h2>
             {submitted && <p>Баярлалаа. Таны хариуг амжилттай хадгаллаа.</p>}
           </div>
 
           {submitted ? (
-            <div className="success-card" role="status">
+            <div className="success-card scroll-reveal" data-scroll-reveal role="status">
               <Confetti />
               <div className="success-check"><Check size={34} strokeWidth={2.2} /></div>
               <h3>{attendance === "yes" ? "Тантай уулзахыг тэсэн ядан хүлээж байна!" : "Хариу өгсөнд баярлалаа"}</h3>
@@ -350,7 +373,7 @@ export default function Home() {
               <button onClick={() => setSubmitted(false)}>Хариугаа өөрчлөх</button>
             </div>
           ) : (
-            <form className="rsvp-card" onSubmit={submitRsvp}>
+            <form className="rsvp-card scroll-reveal" data-scroll-reveal onSubmit={submitRsvp}>
               <label className="field-label" htmlFor="guestName">Таны нэр</label>
               <input id="guestName" name="guestName" type="text" placeholder="Жишээ: Бат болон гэр бүл" maxLength={80} required />
               <fieldset>
