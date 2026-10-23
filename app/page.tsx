@@ -16,11 +16,21 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type Attendance = "yes" | "no";
 
-const EVENT_DATE = new Date("2026-11-06T00:00:00+08:00");
+const EVENT_DATE = new Date("2026-11-06T16:30:00+08:00");
+
+function getCountdown() {
+  const difference = Math.max(0, EVENT_DATE.getTime() - Date.now());
+  return {
+    days: Math.floor(difference / 86_400_000),
+    hours: Math.floor((difference / 3_600_000) % 24),
+    minutes: Math.floor((difference / 60_000) % 60),
+    seconds: Math.floor((difference / 1_000) % 60),
+  };
+}
 
 function Counter({
   label,
@@ -78,9 +88,13 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState(getCountdown);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const daysLeft = useMemo(() => Math.max(0, Math.ceil((EVENT_DATE.getTime() - Date.now()) / 86_400_000)), []);
+  useEffect(() => {
+    const timer = window.setInterval(() => setCountdown(getCountdown()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     fetch("/api/photo", { method: "HEAD", cache: "no-store" })
@@ -247,18 +261,43 @@ export default function Home() {
         </section>
 
         <section className="details-section" id="details">
-          <div className="section-kicker">SAVE THE DATE</div>
-          <h2>Онцгой өдрийг<br /><em>хамтдаа</em> өнгөрүүлье</h2>
-          <div className="date-card">
-            <div className="date-month">11 САР</div>
-            <div className="date-main"><span>БААСАН</span><strong>06</strong><span>2026 ОН</span></div>
-            <div className="date-note"><CalendarDays size={20} /><p><strong>{daysLeft} өдөр үлдлээ</strong><small>Товлосон өдрөө хадгалаарай</small></p></div>
+          <div className="ornament-divider"><span>◆</span></div>
+          <div className="section-kicker">2026 · 11 · 06 · 16:30</div>
+          <h2>Тогтууны анхны<br /><em>төрсөн өдөр</em></h2>
+
+          <div className="calendar-card" aria-label="2026 оны 11 дүгээр сарын календарь">
+            <div className="calendar-top"><span>11 САР</span><strong>2026</strong></div>
+            <div className="calendar-weekdays">
+              {['Ня', 'Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя'].map((day) => <span key={day}>{day}</span>)}
+            </div>
+            <div className="calendar-days">
+              {Array.from({ length: 30 }, (_, index) => index + 1).map((day) => (
+                <span key={day} className={day === 6 ? "selected-day" : ""}>{day}</span>
+              ))}
+            </div>
+            <div className="calendar-caption"><CalendarDays size={18} /> Баасан гараг · 16:30 цаг</div>
           </div>
 
-          <div className="info-grid">
-            <article><span className="info-icon"><Heart size={22} /></span><p>НЭГ НАСНЫ БАЯР</p><h3>2026.11.06</h3><small>Баасан гараг</small></article>
-            <article><span className="info-icon"><MapPin size={22} /></span><p>ЦАГ & БАЙРШИЛ</p><h3>Удахгүй мэдээлнэ</h3><small>Гэр бүлийнхэнтэй холбогдоорой</small></article>
+          <div className="countdown-wrap">
+            <p>БОЛОХ ХҮРТЭЛ</p>
+            <div className="countdown-grid" aria-label="Төрсөн өдөр хүртэлх хугацаа">
+              <div><strong>{countdown.days}</strong><span>ӨДӨР</span></div>
+              <div><strong>{String(countdown.hours).padStart(2, '0')}</strong><span>ЦАГ</span></div>
+              <div><strong>{String(countdown.minutes).padStart(2, '0')}</strong><span>МИНУТ</span></div>
+              <div><strong>{String(countdown.seconds).padStart(2, '0')}</strong><span>СЕКУНД</span></div>
+            </div>
           </div>
+
+          <div className="location-card">
+            <span className="info-icon"><MapPin size={22} /></span>
+            <p>ХААНА</p>
+            <h3>Koko Kids House</h3>
+            <address>Зайсан, Богд уулын энгэрт<br />Хан Голомт Резиденс<br />Club House-н 1 давхар</address>
+            <a href="https://www.google.com/maps/search/?api=1&query=Koko+Kids+House+Zaisan+Khan+Golomt+Residence+Ulaanbaatar" target="_blank" rel="noreferrer">
+              <MapPin size={17} /> Зам заалгах
+            </a>
+          </div>
+          <div className="ornament-divider bottom"><span>◆</span></div>
         </section>
 
         <section className="memory-section">
