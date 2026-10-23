@@ -76,6 +76,46 @@ function Confetti() {
   );
 }
 
+function PartyConfetti({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={compact ? "party-confetti compact" : "party-confetti"} aria-hidden="true">
+      {Array.from({ length: 12 }).map((_, index) => <i key={index} />)}
+      {!compact && (
+        <>
+          <svg className="party-illustration gift" viewBox="0 0 90 82">
+            <path fill="#ffc864" d="M12 23h67v52H12z" />
+            <path fill="#2389ed" d="M38 23h14v52H38zM8 16h74v14H8z" />
+            <path d="M45 18C26-7 19 11 29 19m16-1C62-8 74 7 58 21" fill="none" stroke="#2389ed" strokeWidth="8" strokeLinecap="round" />
+          </svg>
+          <svg className="party-illustration horn" viewBox="0 0 78 88">
+            <path d="M14 69 61 20 71 78Z" fill="#ffd25f" />
+            <path d="m26 57 14-14 24 5 4 17Z" fill="#f35d9b" />
+            <path d="M13 69c-8 5-7 13 3 14m-2-14c-1-9-7-12-12-9" fill="none" stroke="#f35d9b" strokeWidth="3" strokeLinecap="round" />
+          </svg>
+          <svg className="party-illustration cupcake" viewBox="0 0 82 92">
+            <path d="M17 45h49l-7 39H24Z" fill="#fff2df" stroke="#eac9a5" strokeWidth="2" />
+            <path d="M27 47v34m12-34v36m12-36v34" stroke="#b47748" strokeWidth="4" />
+            <path d="M18 47c-3-14 8-17 14-15 0-10 17-14 23-3 12-1 17 8 11 18Z" fill="#f0f7ff" />
+            <path d="M43 31V13" stroke="#2389ed" strokeWidth="6" strokeLinecap="round" /><path d="m43 14 8-8" stroke="#ffc864" strokeWidth="6" strokeLinecap="round" />
+          </svg>
+          <svg className="party-illustration flower" viewBox="0 0 76 76">
+            <g fill="#df3d97" stroke="#f18ac2" strokeWidth="2">
+              <ellipse cx="38" cy="17" rx="11" ry="18" /><ellipse cx="38" cy="59" rx="11" ry="18" />
+              <ellipse cx="17" cy="38" rx="18" ry="11" /><ellipse cx="59" cy="38" rx="18" ry="11" />
+              <ellipse cx="23" cy="23" rx="11" ry="17" transform="rotate(-45 23 23)" /><ellipse cx="53" cy="53" rx="11" ry="17" transform="rotate(-45 53 53)" />
+              <ellipse cx="53" cy="23" rx="11" ry="17" transform="rotate(45 53 23)" /><ellipse cx="23" cy="53" rx="11" ry="17" transform="rotate(45 23 53)" />
+            </g>
+            <circle cx="38" cy="38" r="10" fill="#bc2780" />
+          </svg>
+          <svg className="party-illustration streamer" viewBox="0 0 90 150">
+            <path d="M13 7c69 18-18 44 44 66s-39 40 8 70" fill="none" stroke="#9b68ef" strokeWidth="7" strokeLinecap="round" />
+          </svg>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function Home() {
   const [opened, setOpened] = useState(false);
   const [attendance, setAttendance] = useState<Attendance>("yes");
@@ -200,10 +240,10 @@ export default function Home() {
 
       <div className="invitation-content">
         <section className="hero" id="top">
+          <PartyConfetti />
           <div className="balloon balloon-peach" aria-hidden="true"><span /></div>
           <div className="balloon balloon-blue" aria-hidden="true"><span /></div>
           <div className="hero-copy reveal reveal-1">
-            <p className="eyebrow"><span /> БЯЦХАН БАЯР <span /></p>
             <h1><em>Тогтуун</em><br />нэг нас хүрлээ!</h1>
             <p className="intro">Бидний аз жаргал, бяцхан Тогтууны<br className="desktop-break" /> анхны төрсөн өдрийг хамтдаа тэмдэглэцгээе.</p>
           </div>
@@ -235,6 +275,7 @@ export default function Home() {
         </section>
 
         <section className="details-section" id="details">
+          <PartyConfetti compact />
           <div className="ornament-divider"><span>◆</span></div>
           <h2>Тогтууны анхны<br /><em>төрсөн өдөр</em></h2>
 
@@ -274,9 +315,8 @@ export default function Home() {
         </section>
 
         <section className="memory-section">
-          <div className="memory-number">01</div>
+          <PartyConfetti compact />
           <div className="memory-copy">
-            <p className="eyebrow">АНХНЫ ЖИЛ · АНХНЫ ДУРСАМЖ</p>
             <h2>Инээд, хайр,<br /><em>бяцхан гайхамшиг</em></h2>
             <p>Тогтууны анхны төрсөн өдрийн дурсамжид таны инээмсэглэл хамгийн нандин бэлэг байх болно.</p>
           </div>
@@ -284,6 +324,7 @@ export default function Home() {
         </section>
 
         <section className="rsvp-section" id="rsvp">
+          <PartyConfetti compact />
           <div className="rsvp-heading">
             <h2>{submitted ? "Хариу ирлээ!" : "Ирэх эсэхээ доорх хэсгээр мэдэгдээрэй."}</h2>
             {submitted && <p>Баярлалаа. Таны хариуг амжилттай хадгаллаа.</p>}
