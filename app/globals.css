@@ -282,6 +282,15 @@ footer small { color: rgba(255,255,255,.68); font: 13px Georgia, serif; }
 .toast { position: fixed; z-index: 60; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: calc(100% - 36px); max-width: 420px; background: #29342f; color: white; padding: 14px 17px; box-shadow: 0 16px 40px rgba(25,32,28,.25); text-align: center; font-size: 12px; font-weight: 700; animation: toastIn .35s ease both; }
 .spin { animation: spin 1s linear infinite; }
 
+@media (max-width: 699px) {
+  .hero { min-height: 100svh; padding: 42px 20px 40px; justify-content: flex-start; }
+  .photo-stage { width: min(64vw, 280px); margin-top: 0; }
+  .hero-copy { margin-top: 24px; }
+  .hero h1 { font-size: clamp(38px, 10.8vw, 48px); margin: 0 0 12px; }
+  .intro { font-size: 14px; line-height: 1.55; }
+  .scroll-cue { margin-top: 24px; }
+}
+
 @media (min-width: 700px) {
   .topbar { padding: 0 44px; }
   .hero { padding-top: 130px; }
