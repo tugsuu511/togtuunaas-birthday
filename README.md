@@ -1,6 +1,6 @@
 # togtuunaas-birthday
 
-A clean full-stack starter running on [vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and Drizzle support.
+A full-stack birthday invitation app running on [vinext](https://github.com/cloudflare/vinext), deployed to Vercel with Nitro and Neon Postgres.
 
 ## Prerequisites
 
@@ -8,6 +8,21 @@ A clean full-stack starter running on [vinext](https://github.com/cloudflare/vin
 - Portable: Windows, macOS, or Linux; no Bash required
 - Managed Linux: managed Linux runtime with Bash, `flock`, `curl`, `sha256sum`, and GNU `timeout`
 - Git and `tar` (including Windows `tar.exe`) are required for publishing; portable publication does not require Bash
+
+## Vercel and Neon
+
+Vercel builds use Nitro's Vercel preset and emit the Build Output API in `.vercel/output`. `vercel.json` disables Next.js framework detection; keep the Vercel project's build command set to `npm run build`.
+
+Link the Neon project with the Neon CLI and deploy its declared services. The CLI writes a pooled `DATABASE_URL` and a direct `DATABASE_URL_UNPOOLED` to `.env.local`; that file is local-only and must not be committed. The Drizzle config uses the direct URL for migrations:
+
+```sh
+npm run db:generate
+npm run db:migrate
+```
+
+For Vercel, add the pooled `DATABASE_URL` to the project's Production and Preview environments (or connect the Neon Vercel integration). Do not use the direct URL for app traffic. Vercel API routes use `pg` with Vercel Fluid connection-pool management; local Cloudflare previews use Neon's serverless HTTP driver.
+
+The `/admin` page and `/api/admin/rsvps` endpoint do not require authentication. RSVP names, attendance, and notes are therefore publicly readable; add an access-control layer before collecting data if that is not intended.
 
 ## Sites Lifecycle
 
@@ -49,11 +64,11 @@ Local tool usage metrics are disabled by default. Set `WRANGLER_SEND_METRICS=tru
 - `scripts/connector-preview/` contains the local connector preview Worker and session helpers
 - the remaining `scripts/` files select execution profiles and run installation, development, and builds; the plugin's helpers orchestrate the Sites lifecycle
 - `dist/` contains generated deployment output; `.vinext/`, `.wrangler/`, and `.sites-runtime/` contain ignored local tool state
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
+- `db/index.ts` uses Neon HTTP locally; `db/vercel.ts` uses `pg` with Vercel Fluid
+- `db/schema.ts` defines the Neon Postgres RSVP schema
 - `@cloudflare/workers-types` provides Worker types; `cloudflare-env.d.ts` declares optional `DB`/`BUCKET` bindings—update these declarations if binding names change
 - `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+- `drizzle.config.ts` generates and applies Neon migrations under `drizzle/neon/`
 
 ## Workspace Auth Headers
 
@@ -105,23 +120,18 @@ SIWC establishes identity only; it does not prove workspace membership. Use the 
 
 Use SIWC for account pages, user-specific dashboards, saved records, and write actions tied to the current ChatGPT user. Leave public content anonymous.
 
-## Local D1 migrations
+## Historical D1 migrations
 
-For a D1-backed local preview, generate SQL with `npm run db:generate`. Build once through the Sites skill's build entrypoint (or `npm run build` for standalone use) to generate `dist/server/wrangler.json`, rebuilding if bindings change. From the project root, apply each pending migration in order:
-
-```sh
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_example.sql
-```
-
-Replace the filename with the pending migration and `DB` with your D1 binding name if different. Use `.wrangler/state`, not `.wrangler/state/v3`; Wrangler adds the versioned directories. Do not replay migrations already applied locally. This updates only the preview database; publishing applies production migrations separately.
+The SQLite migration files at the root of `drizzle/` belong to the earlier D1 schema. The current RSVP API uses Neon Postgres; generate and apply its migrations with `npm run db:generate` and `npm run db:migrate`. Do not apply Neon migrations to D1.
 
 ## Diagnostic Commands
 
 - `npm run install:ci`: perform the one locked dependency install
 - `npm run dev`: start the Vite/Vinext development server
 - `npm run build`: build the deployable Sites artifact
-- `npm run start`: preview the built Worker locally with D1/R2 support
+- `npm run start`: preview the built Worker locally
 - `npm run db:generate`: generate Drizzle migrations after schema changes
+- `npm run db:migrate`: apply pending Neon migrations using `DATABASE_URL_UNPOOLED`
 
 When using the Sites plugin, follow its skill instructions for installation, builds, and publishing. These npm commands remain available for standalone use.
 

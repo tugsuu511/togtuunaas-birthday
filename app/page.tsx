@@ -19,6 +19,13 @@ type Attendance = "yes" | "no";
 
 const EVENT_DATE = new Date("2026-11-06T16:30:00+08:00");
 
+type Countdown = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
 function getCountdown() {
   const difference = Math.max(0, EVENT_DATE.getTime() - Date.now());
   return {
@@ -124,11 +131,18 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState(getCountdown);
+  const [countdown, setCountdown] = useState<Countdown | null>(null);
 
   useEffect(() => {
+    const initialUpdate = window.setTimeout(
+      () => setCountdown(getCountdown()),
+      0,
+    );
     const timer = window.setInterval(() => setCountdown(getCountdown()), 1000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(initialUpdate);
+      window.clearInterval(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -159,6 +173,20 @@ export default function Home() {
     items.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
   }, [opened, submitted]);
+
+  useEffect(() => {
+    if (!submitted) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSubmitted(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [submitted]);
 
   function openInvitation() {
     if (isOpening) return;
@@ -191,7 +219,6 @@ export default function Home() {
       });
       if (!response.ok) throw new Error("submit failed");
       setSubmitted(true);
-      window.setTimeout(() => document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" }), 50);
     } catch {
       setToast("Хариуг хадгалж чадсангүй. Дахин оролдоно уу.");
     } finally {
@@ -282,10 +309,10 @@ export default function Home() {
           <div className="countdown-wrap scroll-reveal" data-scroll-reveal>
             <p>БОЛОХ ХҮРТЭЛ</p>
             <div className="countdown-grid" aria-label="Төрсөн өдөр хүртэлх хугацаа">
-              <div><strong>{countdown.days}</strong><span>ӨДӨР</span></div>
-              <div><strong>{String(countdown.hours).padStart(2, '0')}</strong><span>ЦАГ</span></div>
-              <div><strong>{String(countdown.minutes).padStart(2, '0')}</strong><span>МИНУТ</span></div>
-              <div><strong>{String(countdown.seconds).padStart(2, '0')}</strong><span>СЕКУНД</span></div>
+              <div><strong>{countdown?.days ?? "—"}</strong><span>ӨДӨР</span></div>
+              <div><strong>{countdown ? String(countdown.hours).padStart(2, "0") : "—"}</strong><span>ЦАГ</span></div>
+              <div><strong>{countdown ? String(countdown.minutes).padStart(2, "0") : "—"}</strong><span>МИНУТ</span></div>
+              <div><strong>{countdown ? String(countdown.seconds).padStart(2, "0") : "—"}</strong><span>СЕКУНД</span></div>
             </div>
           </div>
 
@@ -313,43 +340,45 @@ export default function Home() {
         <section className="rsvp-section" id="rsvp">
           <PartyConfetti compact />
           <div className="rsvp-heading scroll-reveal" data-scroll-reveal>
-            <h2>{submitted ? "Хариу ирлээ!" : "Ирэх эсэхээ доорх хэсгээр мэдэгдээрэй."}</h2>
-            {submitted && <p>Баярлалаа. Таны хариуг амжилттай хадгаллаа.</p>}
+            <h2>Ирэх эсэхээ доорх хэсгээр мэдэгдээрэй.</h2>
           </div>
 
-          {submitted ? (
-            <div className="success-card scroll-reveal" data-scroll-reveal role="status">
-              <Confetti />
-              <div className="success-check"><Check size={34} strokeWidth={2.2} /></div>
-              <h3>{attendance === "yes" ? "Тантай уулзахыг тэсэн ядан хүлээж байна!" : "Хариу өгсөнд баярлалаа"}</h3>
-              <p>{attendance === "yes" ? `${adults} том хүн${children ? `, ${children} хүүхэд` : ""}${infants ? `, ${infants} нярай` : ""} ирэхээр бүртгэгдлээ.` : "Энэ удаа хамт байж чадахгүй ч таны сайхан ерөөл бидэнтэй хамт байна."}</p>
-              <button onClick={() => setSubmitted(false)}>Хариугаа өөрчлөх</button>
-            </div>
-          ) : (
-            <form className="rsvp-card scroll-reveal" data-scroll-reveal onSubmit={submitRsvp}>
-              <label className="field-label" htmlFor="guestName">Таны нэр</label>
-              <input id="guestName" name="guestName" type="text" placeholder="Жишээ: Бат болон гэр бүл" maxLength={80} required />
-              <fieldset>
-                <legend>Та хүрэлцэн ирэх үү?</legend>
-                <div className="attendance-options">
-                  <button type="button" className={attendance === "yes" ? "selected" : ""} onClick={() => setAttendance("yes")}><span className="choice-dot"><Check size={14} /></span>Тийм, очно</button>
-                  <button type="button" className={attendance === "no" ? "selected no" : ""} onClick={() => setAttendance("no")}><span className="choice-dot"><X size={14} /></span>Уучлаарай, очихгүй</button>
-                </div>
-              </fieldset>
-              <div className={attendance === "yes" ? "guest-counts" : "guest-counts disabled-counts"}>
-                <Counter label="Том хүн" hint="13 наснаас дээш" value={adults} onChange={setAdults} icon={<Users size={20} />} />
-                <Counter label="Хүүхэд" hint="3–12 нас" value={children} onChange={setChildren} icon={<Baby size={20} />} />
-                <Counter label="Нярай" hint="0–3 нас" value={infants} onChange={setInfants} icon={<Baby size={20} />} />
+          <form className="rsvp-card scroll-reveal" data-scroll-reveal onSubmit={submitRsvp}>
+            <label className="field-label" htmlFor="guestName">Таны нэр</label>
+            <input id="guestName" name="guestName" type="text" placeholder="Жишээ: Бат болон гэр бүл" maxLength={80} required />
+            <fieldset>
+              <legend>Та хүрэлцэн ирэх үү?</legend>
+              <div className="attendance-options">
+                <button type="button" className={attendance === "yes" ? "selected" : ""} onClick={() => setAttendance("yes")}><span className="choice-dot"><Check size={14} /></span>Тийм, очно</button>
+                <button type="button" className={attendance === "no" ? "selected no" : ""} onClick={() => setAttendance("no")}><span className="choice-dot"><X size={14} /></span>Уучлаарай, очихгүй</button>
               </div>
-              <button className="submit-button" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? <LoaderCircle className="spin" size={19} /> : <Heart size={18} />}
-                {isSubmitting ? "Хадгалж байна…" : "Хариугаа илгээх"}
-              </button>
-            </form>
-          )}
+            </fieldset>
+            <div className={attendance === "yes" ? "guest-counts" : "guest-counts disabled-counts"}>
+              <Counter label="Том хүн" hint="13 наснаас дээш" value={adults} onChange={setAdults} icon={<Users size={20} />} />
+              <Counter label="Хүүхэд" hint="3–12 нас" value={children} onChange={setChildren} icon={<Baby size={20} />} />
+              <Counter label="Нярай" hint="0–3 нас" value={infants} onChange={setInfants} icon={<Baby size={20} />} />
+            </div>
+            <button className="submit-button" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? <LoaderCircle className="spin" size={19} /> : <Heart size={18} />}
+              {isSubmitting ? "Хадгалж байна…" : "Хариугаа илгээх"}
+            </button>
+          </form>
         </section>
 
       </div>
+
+      {submitted && (
+        <div className="dialog-backdrop" onMouseDown={() => setSubmitted(false)}>
+          <div className="success-card thank-dialog" role="dialog" aria-modal="true" aria-labelledby="thank-title" aria-describedby="thank-message" onMouseDown={(event) => event.stopPropagation()}>
+            <Confetti />
+            <div className="success-check"><Check size={34} strokeWidth={2.2} /></div>
+            <p className="dialog-kicker">ХАРИУ АМЖИЛТТАЙ ИРЛЭЭ</p>
+            <h3 id="thank-title">{attendance === "yes" ? "Баярлалаа! Тантай уулзахыг тэсэн ядан хүлээж байна." : "Хариу өгсөнд баярлалаа!"}</h3>
+            <p id="thank-message">{attendance === "yes" ? `${adults} том хүн${children ? `, ${children} хүүхэд` : ""}${infants ? `, ${infants} нярай` : ""} ирэхээр бүртгэгдлээ.` : "Энэ удаа хамт байж чадахгүй ч таны сайхан ерөөл бидэнтэй хамт байна."}</p>
+            <button className="dialog-button" type="button" onClick={() => setSubmitted(false)} autoFocus>Хаах</button>
+          </div>
+        </div>
+      )}
 
       {toast && <div className="toast" role="status">{toast}</div>}
     </main>

@@ -1,8 +1,6 @@
 import { getDb } from "@/db";
 import { rsvps } from "@/db/schema";
 
-export const runtime = "edge";
-
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
@@ -16,7 +14,8 @@ export async function POST(request: Request) {
     if (attendance === "yes" && adultCount + childCount + infantCount < 1) return Response.json({ error: "guest_count_required" }, { status: 400 });
 
     const id = crypto.randomUUID();
-    await getDb().insert(rsvps).values({ id, guestName, attendance, adultCount, childCount, infantCount, note, createdAt: Date.now() });
+    const db = await getDb();
+    await db.insert(rsvps).values({ id, guestName, attendance, adultCount, childCount, infantCount, note, createdAt: Date.now() });
     return Response.json({ ok: true, id });
   } catch (error) {
     console.error("RSVP submission failed", error);

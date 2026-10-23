@@ -1,5 +1,6 @@
 import vinext from "vinext";
 import { defineConfig } from "vite";
+import { nitro } from "nitro/vite";
 import hostingConfig from "./.openai/hosting.json";
 import { readExecutionProfile } from "./scripts/execution-profile.mjs";
 import { configureToolEnvironment } from "./scripts/tool-environment.mjs";
@@ -14,6 +15,7 @@ const { d1, r2 } = hostingConfig;
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
 const managedLinux = readExecutionProfile() === "managed-linux";
+const isVercel = process.env.VERCEL === "1";
 
 const localBindingConfig = {
   main: "./worker/index.ts",
@@ -52,41 +54,43 @@ export default defineConfig(async ({ command }) => {
         ? { watch: { useFsEvents: false, usePolling: true } }
         : {}),
     },
-    plugins: [
-      vinext(),
-      sites({ mockAuth: !managedLinux }),
-      connectorPreview(),
-      cloudflare({
-        viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
-        inspectorPort: false,
-        config: {
-          ...localBindingConfig,
-          ...(command === "serve"
-            ? {
-                services: [
-                  {
-                    binding: "CONNECTORS",
-                    service: "sites-connector-preview",
-                    entrypoint: "ConnectorPreview",
-                  },
-                ],
-              }
-            : {}),
-        },
-        ...(command === "serve"
-          ? {
-              auxiliaryWorkers: [
-                {
-                  config: {
-                    name: "sites-connector-preview",
-                    main: "./scripts/connector-preview/worker.mjs",
-                    compatibility_date: "2026-05-15",
-                  },
-                },
-              ],
-            }
-          : {}),
-      }),
-    ],
+    plugins: isVercel
+      ? [vinext(), nitro()]
+      : [
+          vinext(),
+          sites({ mockAuth: !managedLinux }),
+          connectorPreview(),
+          cloudflare({
+            viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
+            inspectorPort: false,
+            config: {
+              ...localBindingConfig,
+              ...(command === "serve"
+                ? {
+                    services: [
+                      {
+                        binding: "CONNECTORS",
+                        service: "sites-connector-preview",
+                        entrypoint: "ConnectorPreview",
+                      },
+                    ],
+                  }
+                : {}),
+            },
+            ...(command === "serve"
+              ? {
+                  auxiliaryWorkers: [
+                    {
+                      config: {
+                        name: "sites-connector-preview",
+                        main: "./scripts/connector-preview/worker.mjs",
+                        compatibility_date: "2026-05-15",
+                      },
+                    },
+                  ],
+                }
+              : {}),
+          }),
+        ],
   };
 });

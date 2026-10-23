@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "../node_modules/tailwindcss/index.css";
 
 :root {
   --cream: #f3f8fc;
@@ -297,6 +297,11 @@ fieldset { border: 0; padding: 0; margin: 0 0 22px; }
 .success-card h3 { font: 400 27px/1.2 Georgia, serif; max-width: 420px; margin: 23px 0 10px; }
 .success-card > p { max-width: 420px; color: #6c756f; font-size: 13px; line-height: 1.7; }
 .success-card > button { border: 0; border-bottom: 1px solid currentColor; background: transparent; color: var(--sage-deep); margin-top: 14px; padding: 5px 1px; font-weight: 800; font-size: 11px; }
+.dialog-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: rgba(2,31,53,.72); backdrop-filter: blur(8px); animation: dialogFade .3s ease both; }
+.thank-dialog.success-card { width: min(100%, 440px); min-height: 390px; margin: 0; padding: 38px 26px 30px; border: 1px solid rgba(255,201,94,.4); box-shadow: 0 28px 80px rgba(0,0,0,.34), 0 0 34px rgba(255,201,94,.16); animation: dialogPop .48s cubic-bezier(.2,1.35,.45,1) both; }
+.dialog-kicker { margin: 20px 0 0 !important; color: #b28120 !important; font-size: 9px !important; font-weight: 900; letter-spacing: .18em; }
+.thank-dialog h3 { margin-top: 13px; color: var(--navy); }
+.thank-dialog.success-card > .dialog-button { min-width: 142px; min-height: 44px; margin-top: 24px; padding: 0 24px; border: 0; border-radius: 999px; background: linear-gradient(135deg, #2c8ff1, #6233ca); color: #fff; box-shadow: 0 10px 22px rgba(44,87,175,.24); font-size: 12px; }
 .confetti { position: absolute; inset: 0; pointer-events: none; }
 .confetti i { --angle: calc(var(--i) * 20deg); position: absolute; left: 50%; top: 38%; width: 6px; height: 12px; background: var(--peach); transform: rotate(var(--angle)) translateY(-105px); opacity: 0; animation: confetti .8s calc(var(--i) * 20ms) ease-out forwards; }
 .confetti i:nth-child(3n) { background: var(--sage); }
@@ -392,3 +397,5 @@ footer small { color: rgba(255,255,255,.68); font: 13px Georgia, serif; }
   0%, 100% { transform: translate3d(-18px, 0, 0) rotate(-.5deg); }
   50% { transform: translate3d(18px, 12px, 0) rotate(.5deg); }
 }
+@keyframes dialogFade { from { opacity: 0; } }
+@keyframes dialogPop { from { opacity: 0; transform: translateY(24px) scale(.92); } }
