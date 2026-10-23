@@ -4,7 +4,6 @@ import {
   ArrowDown,
   Baby,
   CalendarDays,
-  Camera,
   Check,
   Minus,
   Plus,
@@ -14,7 +13,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 type Attendance = "yes" | "no";
 
@@ -121,27 +120,15 @@ export default function Home() {
   const [attendance, setAttendance] = useState<Attendance>("yes");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [photoVersion, setPhotoVersion] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(getCountdown);
-  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const timer = window.setInterval(() => setCountdown(getCountdown()), 1000);
     return () => window.clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    fetch("/api/photo", { method: "HEAD", cache: "no-store" })
-      .then((response) => {
-        if (response.ok) setPhotoUrl(`/api/photo?v=${Date.now()}`);
-      })
-      .catch(() => undefined);
-  }, [photoVersion]);
 
   useEffect(() => {
     if (!toast) return;
@@ -176,34 +163,6 @@ export default function Home() {
     if (isOpening) return;
     setIsOpening(true);
     window.setTimeout(() => setOpened(true), 1400);
-  }
-
-  async function uploadPhoto(file: File) {
-    if (!file.type.startsWith("image/")) {
-      setToast("Зөвхөн зураг сонгоно уу.");
-      return;
-    }
-    if (file.size > 8 * 1024 * 1024) {
-      setToast("Зургийн хэмжээ 8MB-аас бага байх хэрэгтэй.");
-      return;
-    }
-
-    const localUrl = URL.createObjectURL(file);
-    setPhotoUrl(localUrl);
-    setIsUploading(true);
-    try {
-      const body = new FormData();
-      body.append("photo", file);
-      const response = await fetch("/api/photo", { method: "POST", body });
-      if (!response.ok) throw new Error("upload failed");
-      setPhotoVersion((version) => version + 1);
-      setToast("Зураг урилгын загварт хадгалагдлаа.");
-    } catch {
-      setToast("Зургийг хадгалж чадсангүй. Дахин оролдоно уу.");
-    } finally {
-      setIsUploading(false);
-      window.setTimeout(() => URL.revokeObjectURL(localUrl), 1000);
-    }
   }
 
   async function submitRsvp(event: FormEvent<HTMLFormElement>) {
@@ -286,21 +245,8 @@ export default function Home() {
             <div className="spark spark-a">✦</div>
             <div className="spark spark-b">✧</div>
             <div className="photo-frame">
-              {photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={photoUrl} alt="Т.Тогтуун хүүхдийн зураг" />
-              ) : (
-                <div className="photo-placeholder"><div className="one-mark">1</div><span>энд Тогтууны<br />зураг орно</span></div>
-              )}
-              <button className="photo-action" onClick={() => fileRef.current?.click()} disabled={isUploading}>
-                {isUploading ? <LoaderCircle className="spin" size={17} /> : <Camera size={17} />}
-                {photoUrl ? "Зураг солих" : "Зураг нэмэх"}
-              </button>
-              <input ref={fileRef} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) void uploadPhoto(file);
-                event.target.value = "";
-              }} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/togtuun-first-birthday.png" alt="Т.Тогтуун хүүхдийн нэг насны зураг" />
             </div>
             <div className="mini-cake" aria-hidden="true"><i /><b>1</b><span /></div>
           </div>
