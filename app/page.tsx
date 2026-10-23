@@ -11,7 +11,6 @@ import {
   Heart,
   LoaderCircle,
   MapPin,
-  Share2,
   Sparkles,
   Users,
   X,
@@ -157,7 +156,7 @@ export default function Home() {
           attendance,
           adults: attendance === "yes" ? adults : 0,
           children: attendance === "yes" ? children : 0,
-          note: String(form.get("note") || "").trim(),
+          note: "",
         }),
       });
       if (!response.ok) throw new Error("submit failed");
@@ -167,23 +166,6 @@ export default function Home() {
       setToast("Хариуг хадгалж чадсангүй. Дахин оролдоно уу.");
     } finally {
       setIsSubmitting(false);
-    }
-  }
-
-  async function shareInvitation() {
-    const shareData = {
-      title: "Т.Тогтуун — 1 нас",
-      text: "Т.Тогтуун хүүхдийн 1 насны төрсөн өдрийн урилга",
-      url: window.location.href,
-    };
-    try {
-      if (navigator.share) await navigator.share(shareData);
-      else {
-        await navigator.clipboard.writeText(window.location.href);
-        setToast("Урилгын холбоос хууллаа.");
-      }
-    } catch {
-      // The native share sheet may be dismissed intentionally.
     }
   }
 
@@ -217,14 +199,6 @@ export default function Home() {
       )}
 
       <div className="invitation-content">
-        <nav className="topbar">
-          <a className="wordmark" href="#top" aria-label="Эхлэл рүү">
-            <span>T</span>
-            <div>TOGTUUN<small>ONE YEAR OLD</small></div>
-          </a>
-          <button className="icon-button" onClick={shareInvitation} aria-label="Урилгыг хуваалцах"><Share2 size={19} /></button>
-        </nav>
-
         <section className="hero" id="top">
           <div className="balloon balloon-peach" aria-hidden="true"><span /></div>
           <div className="balloon balloon-blue" aria-hidden="true"><span /></div>
@@ -312,9 +286,8 @@ export default function Home() {
 
         <section className="rsvp-section" id="rsvp">
           <div className="rsvp-heading">
-            <p className="eyebrow">RSVP · ХАРИУ ӨГӨХ</p>
-            <h2>{submitted ? "Хариу ирлээ!" : "Та бидэнтэй хамт байх уу?"}</h2>
-            <p>{submitted ? "Баярлалаа. Таны хариуг амжилттай хадгаллаа." : "Ирэх эсэхээ доорх хэсгээр мэдэгдээрэй."}</p>
+            <h2>{submitted ? "Хариу ирлээ!" : "Ирэх эсэхээ доорх хэсгээр мэдэгдээрэй."}</h2>
+            {submitted && <p>Баярлалаа. Таны хариуг амжилттай хадгаллаа.</p>}
           </div>
 
           {submitted ? (
@@ -338,10 +311,8 @@ export default function Home() {
               </fieldset>
               <div className={attendance === "yes" ? "guest-counts" : "guest-counts disabled-counts"}>
                 <Counter label="Том хүн" hint="13 наснаас дээш" value={adults} onChange={setAdults} icon={<Users size={20} />} />
-                <Counter label="Хүүхэд" hint="0–12 нас" value={children} onChange={setChildren} icon={<Baby size={20} />} />
+                <Counter label="Хүүхэд" hint="3–12 нас" value={children} onChange={setChildren} icon={<Baby size={20} />} />
               </div>
-              <label className="field-label" htmlFor="note">Мэндчилгээ <span>(заавал биш)</span></label>
-              <textarea id="note" name="note" placeholder="Тогтуунд зориулсан сайхан үгээ үлдээгээрэй…" maxLength={280} rows={3} />
               <button className="submit-button" type="submit" disabled={isSubmitting}>
                 {isSubmitting ? <LoaderCircle className="spin" size={19} /> : <Heart size={18} />}
                 {isSubmitting ? "Хадгалж байна…" : "Хариугаа илгээх"}
@@ -350,7 +321,6 @@ export default function Home() {
           )}
         </section>
 
-        <footer><div className="footer-one">1</div><p>Тогтуун · 2026</p><small>Таныг хайртайгаар хүлээж байна ♡</small></footer>
       </div>
 
       {toast && <div className="toast" role="status">{toast}</div>}
