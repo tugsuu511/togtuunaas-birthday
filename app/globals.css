@@ -113,7 +113,20 @@ button { cursor: pointer; }
 .hero .eyebrow { color: #78c9ff; }
 .hero h1 { font-family: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif; font-size: clamp(44px, 12vw, 84px); font-weight: 900; line-height: .92; letter-spacing: -.055em; margin: 22px 0 22px; color: #fff; }
 .hero h1 em, .details-section h2 em, .memory-copy h2 em { color: #f6c65f; font-weight: 400; text-shadow: 0 2px 14px rgba(246,198,95,.4); }
-.hero h1 em { text-shadow: 0 3px 20px rgba(246,198,95,.48); }
+.hero h1 em { display: block; font-style: normal; text-shadow: 0 3px 20px rgba(246,198,95,.48); }
+.birthday-age {
+  position: relative; display: block; width: fit-content; margin: 6px auto -3px; padding: 0 .34em;
+  font: italic 700 1.5em/.78 Georgia, "Times New Roman", serif; font-size: clamp(60px, 1.45em, 112px); letter-spacing: -.08em; color: #f8ce6b;
+  text-shadow: 0 0 10px rgba(255,226,150,.72), 0 5px 20px rgba(200,132,15,.42);
+}
+.birthday-age::before, .birthday-age::after { content: "✦"; position: absolute; top: 42%; font: 400 .18em/1 Georgia, serif; color: #ffe7a3; text-shadow: 0 0 8px rgba(255,226,150,.9); }
+.birthday-age::before { right: 100%; }
+.birthday-age::after { left: 100%; }
+.birthday-script {
+  display: block; margin-top: 8px; font-family: "Segoe Script", "Brush Script MT", "Snell Roundhand", cursive;
+  font-size: .57em; font-weight: 600; line-height: 1.2; letter-spacing: -.02em; color: #fff; transform: rotate(-2deg);
+  text-shadow: 0 3px 14px rgba(0,0,0,.2);
+}
 .letter-preview strong { color: #c99a37; }
 .intro { font: 15px/1.7 Georgia, serif; color: #d8eaf5; margin: 0 auto; }
 .photo-stage { position: relative; width: min(76vw, 350px); margin-top: 28px; z-index: 2; order: 1; }

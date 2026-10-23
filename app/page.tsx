@@ -237,7 +237,11 @@ export default function Home() {
           <div className="balloon balloon-peach" aria-hidden="true"><span /></div>
           <div className="balloon balloon-blue" aria-hidden="true"><span /></div>
           <div className="hero-copy reveal reveal-1">
-            <h1><em>Тогтуун</em><br />нэг нас хүрлээ!</h1>
+            <h1>
+              <em>Тогтуун</em>
+              <span className="birthday-age">1</span>
+              <span className="birthday-script">нас хүрлээ!</span>
+            </h1>
             <p className="intro">Бидний аз жаргал, бяцхан Тогтууны<br className="desktop-break" /> анхны төрсөн өдрийг хамтдаа тэмдэглэцгээе.</p>
           </div>
 
