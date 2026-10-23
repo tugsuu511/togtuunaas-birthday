@@ -236,7 +236,6 @@ export default function Home() {
 
         <section className="details-section" id="details">
           <div className="ornament-divider"><span>◆</span></div>
-          <div className="section-kicker">2026 · 11 · 06 · 16:30</div>
           <h2>Тогтууны анхны<br /><em>төрсөн өдөр</em></h2>
 
           <div className="calendar-card" aria-label="2026 оны 11 дүгээр сарын календарь">
