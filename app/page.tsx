@@ -219,7 +219,6 @@ export default function Home() {
           <div className="opening-orbit orbit-two" />
           <div className="envelope-wrap">
             <div className="tiny-stars" aria-hidden="true">✦ · ✧ · ✦</div>
-            <p className="eyebrow">ТАНД ИРҮҮЛСЭН УРИЛГА</p>
             <div className="envelope" aria-hidden="true">
               <div className="envelope-back" />
               <div className="letter-preview">
