@@ -1,0 +1,1 @@
+ALTER TABLE `rsvps` ADD `infant_count` integer DEFAULT 0 NOT NULL;

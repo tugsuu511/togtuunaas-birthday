@@ -338,7 +338,7 @@
   .shell { padding-top: 54px; }
   .header { flex-direction: row; align-items: end; justify-content: space-between; }
   .headerActions { min-width: 300px; }
-  .stats { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .stats { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .stats article:first-child { grid-column: auto; }
   .toolbar { flex-direction: row; align-items: center; justify-content: space-between; }
   .search { width: min(360px, 48%); }

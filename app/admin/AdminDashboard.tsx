@@ -10,6 +10,7 @@ type Rsvp = {
   attendance: "yes" | "no";
   adultCount: number;
   childCount: number;
+  infantCount: number;
   note: string;
   createdAt: number;
 };
@@ -61,13 +62,15 @@ export default function AdminDashboard() {
     const attending = responses.filter((item) => item.attendance === "yes");
     const adults = attending.reduce((sum, item) => sum + item.adultCount, 0);
     const children = attending.reduce((sum, item) => sum + item.childCount, 0);
+    const infants = attending.reduce((sum, item) => sum + item.infantCount, 0);
     return {
       total: responses.length,
       attending: attending.length,
       declined: responses.length - attending.length,
       adults,
       children,
-      people: adults + children,
+      infants,
+      people: adults + children + infants,
     };
   }, [responses]);
 
@@ -82,13 +85,14 @@ export default function AdminDashboard() {
 
   function downloadCsv() {
     const rows = [
-      ["Зочны нэр", "Хариу", "Том хүн", "Хүүхэд", "Нийт хүн", "Илгээсэн огноо"],
+      ["Зочны нэр", "Хариу", "Том хүн", "Хүүхэд", "Нярай", "Нийт хүн", "Илгээсэн огноо"],
       ...responses.map((item) => [
         item.guestName,
         item.attendance === "yes" ? "Очно" : "Очихгүй",
         item.adultCount,
         item.childCount,
-        item.adultCount + item.childCount,
+        item.infantCount,
+        item.adultCount + item.childCount + item.infantCount,
         dateFormatter.format(new Date(item.createdAt)),
       ]),
     ];
@@ -128,6 +132,7 @@ export default function AdminDashboard() {
           <article><span><Check size={20} /></span><p>Очно</p><strong>{stats.attending}</strong><small>{stats.people} хүн ирнэ</small></article>
           <article><span><Users size={20} /></span><p>Том хүн</p><strong>{stats.adults}</strong><small>нийт</small></article>
           <article><span><Baby size={20} /></span><p>Хүүхэд</p><strong>{stats.children}</strong><small>3–12 нас</small></article>
+          <article><span><Baby size={20} /></span><p>Нярай</p><strong>{stats.infants}</strong><small>0–3 нас</small></article>
           <article><span><X size={20} /></span><p>Очихгүй</p><strong>{stats.declined}</strong><small>хариу</small></article>
         </section>
 
@@ -150,7 +155,7 @@ export default function AdminDashboard() {
           ) : (
             <div className={styles.tableWrap}>
               <table>
-                <thead><tr><th>Зочны нэр</th><th>Хариу</th><th>Том хүн</th><th>Хүүхэд</th><th>Нийт</th><th>Илгээсэн</th></tr></thead>
+                <thead><tr><th>Зочны нэр</th><th>Хариу</th><th>Том хүн</th><th>Хүүхэд</th><th>Нярай</th><th>Нийт</th><th>Илгээсэн</th></tr></thead>
                 <tbody>
                   {visibleResponses.map((item) => (
                     <tr key={item.id}>
@@ -158,7 +163,8 @@ export default function AdminDashboard() {
                       <td data-label="Хариу"><span className={item.attendance === "yes" ? styles.yesBadge : styles.noBadge}>{item.attendance === "yes" ? <><Check size={13} /> Очно</> : <><X size={13} /> Очихгүй</>}</span></td>
                       <td data-label="Том хүн">{item.adultCount}</td>
                       <td data-label="Хүүхэд">{item.childCount}</td>
-                      <td data-label="Нийт">{item.adultCount + item.childCount}</td>
+                      <td data-label="Нярай">{item.infantCount}</td>
+                      <td data-label="Нийт">{item.adultCount + item.childCount + item.infantCount}</td>
                       <td data-label="Илгээсэн"><time dateTime={new Date(item.createdAt).toISOString()}>{dateFormatter.format(new Date(item.createdAt))}</time></td>
                     </tr>
                   ))}

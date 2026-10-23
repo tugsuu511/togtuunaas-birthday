@@ -6,6 +6,7 @@ export const rsvps = sqliteTable("rsvps", {
   attendance: text("attendance", { enum: ["yes", "no"] }).notNull(),
   adultCount: integer("adult_count").notNull().default(0),
   childCount: integer("child_count").notNull().default(0),
+  infantCount: integer("infant_count").notNull().default(0),
   note: text("note").notNull().default(""),
   createdAt: integer("created_at").notNull(),
 });

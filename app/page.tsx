@@ -120,6 +120,7 @@ export default function Home() {
   const [attendance, setAttendance] = useState<Attendance>("yes");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
+  const [infants, setInfants] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -184,6 +185,7 @@ export default function Home() {
           attendance,
           adults: attendance === "yes" ? adults : 0,
           children: attendance === "yes" ? children : 0,
+          infants: attendance === "yes" ? infants : 0,
           note: "",
         }),
       });
@@ -240,7 +242,7 @@ export default function Home() {
             <h1>
               <em>Тогтуун</em>
               <span className="birthday-age">1</span>
-              <span className="birthday-script">нас хүрлээ!</span>
+              <span className="birthday-script">нас хvрлээ!</span>
             </h1>
             <p className="intro">Бидний аз жаргал, бяцхан Тогтууны<br className="desktop-break" /> анхны төрсөн өдрийг хамтдаа тэмдэглэцгээе.</p>
           </div>
@@ -319,7 +321,7 @@ export default function Home() {
               <Confetti />
               <div className="success-check"><Check size={34} strokeWidth={2.2} /></div>
               <h3>{attendance === "yes" ? "Тантай уулзахыг тэсэн ядан хүлээж байна!" : "Хариу өгсөнд баярлалаа"}</h3>
-              <p>{attendance === "yes" ? `${adults} том хүн${children ? `, ${children} хүүхэд` : ""} ирэхээр бүртгэгдлээ.` : "Энэ удаа хамт байж чадахгүй ч таны сайхан ерөөл бидэнтэй хамт байна."}</p>
+              <p>{attendance === "yes" ? `${adults} том хүн${children ? `, ${children} хүүхэд` : ""}${infants ? `, ${infants} нярай` : ""} ирэхээр бүртгэгдлээ.` : "Энэ удаа хамт байж чадахгүй ч таны сайхан ерөөл бидэнтэй хамт байна."}</p>
               <button onClick={() => setSubmitted(false)}>Хариугаа өөрчлөх</button>
             </div>
           ) : (
@@ -336,6 +338,7 @@ export default function Home() {
               <div className={attendance === "yes" ? "guest-counts" : "guest-counts disabled-counts"}>
                 <Counter label="Том хүн" hint="13 наснаас дээш" value={adults} onChange={setAdults} icon={<Users size={20} />} />
                 <Counter label="Хүүхэд" hint="3–12 нас" value={children} onChange={setChildren} icon={<Baby size={20} />} />
+                <Counter label="Нярай" hint="0–3 нас" value={infants} onChange={setInfants} icon={<Baby size={20} />} />
               </div>
               <button className="submit-button" type="submit" disabled={isSubmitting}>
                 {isSubmitting ? <LoaderCircle className="spin" size={19} /> : <Heart size={18} />}

@@ -61,7 +61,7 @@ button { cursor: pointer; }
   align-items: center; justify-content: flex-start; padding-top: 26px; transition: transform .45s ease;
 }
 .envelope:hover .letter-preview { transform: translateY(-10px); }
-.letter-preview strong { margin-top: 9px; font: italic 700 32px Georgia, serif; }
+.letter-preview strong { margin-top: 9px; font: italic 700 34px "Monotype Corsiva", "Segoe Script", cursive; letter-spacing: .02em; }
 .letter-preview span { margin-top: 4px; text-transform: uppercase; letter-spacing: .18em; font-size: 9px; }
 .envelope-front { position: absolute; inset: 0; z-index: 2; overflow: hidden; border-radius: 8px; }
 .envelope-front::before, .envelope-front::after { content: ""; position: absolute; inset: 0; }
@@ -113,7 +113,11 @@ button { cursor: pointer; }
 .hero .eyebrow { color: #78c9ff; }
 .hero h1 { font-family: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif; font-size: clamp(44px, 12vw, 84px); font-weight: 900; line-height: .92; letter-spacing: -.055em; margin: 22px 0 22px; color: #fff; }
 .hero h1 em, .details-section h2 em, .memory-copy h2 em { color: #f6c65f; font-weight: 400; text-shadow: 0 2px 14px rgba(246,198,95,.4); }
-.hero h1 em { display: block; font-style: normal; text-shadow: 0 3px 20px rgba(246,198,95,.48); }
+.hero h1 em {
+  display: block; font-family: "Monotype Corsiva", "Segoe Script", "Brush Script MT", cursive; font-size: 1.08em;
+  font-style: italic; font-weight: 700; letter-spacing: -.015em; transform: rotate(-2deg);
+  text-shadow: 0 3px 20px rgba(246,198,95,.48);
+}
 .birthday-age {
   position: relative; display: block; width: fit-content; margin: 6px auto -3px; padding: 0 .34em;
   font: italic 700 1.5em/.78 Georgia, "Times New Roman", serif; font-size: clamp(60px, 1.45em, 112px); letter-spacing: -.08em; color: #f8ce6b;
@@ -267,7 +271,7 @@ fieldset { border: 0; padding: 0; margin: 0 0 22px; }
 .attendance-options button.selected { border-color: var(--sage); background: var(--sage-pale); color: var(--sage-deep); box-shadow: inset 3px 0 0 var(--sage); }
 .attendance-options button.selected.no { border-color: var(--peach); background: #fbebe1; color: #8a5e47; box-shadow: inset 3px 0 0 var(--peach); }
 .choice-dot { width: 25px; height: 25px; border: 1px solid currentColor; border-radius: 50%; display: grid; place-items: center; }
-.guest-counts { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 23px; transition: opacity .25s, max-height .3s, margin .3s; max-height: 180px; overflow: hidden; }
+.guest-counts { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 23px; transition: opacity .25s, max-height .3s, margin .3s; max-height: 270px; overflow: hidden; }
 .guest-counts.disabled-counts { max-height: 0; opacity: 0; margin-bottom: 0; border: 0; pointer-events: none; }
 .counter-row { display: flex; justify-content: space-between; align-items: center; padding: 17px 0; }
 .counter-row + .counter-row { border-top: 1px solid var(--line); }
